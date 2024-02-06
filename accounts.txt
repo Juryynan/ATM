@@ -1,0 +1,5 @@
+1,card2,1234,John Smith,2000.20
+2,card3,3456,Jonathan Mcgormat,3000.30
+3,card4,5678,Jussi Makinen,5000.45
+4,card5,8900,Jutta Jarvinen,3450.60
+5,card6,6000,Minerva,10000.45

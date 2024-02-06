@@ -8,7 +8,7 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": true,
-      "cwd": "c:/Development/ATM",
+      "cwd": "${workspaceRoot}",
       "program": "c:/Development/ATM/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
