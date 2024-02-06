@@ -1,12 +1,9 @@
-/*  ATM program
-    
-    Written by Juho Ryynänen
-
-    With this small ATM program user can view account information, add money, withdraw money and print recipe
-
-    Maybe to-do: 
-    1. Update data to file when deposit and withdrawal are completed.
-    2. File for logging transactions.
+/*   Automatic teller machine
+*    
+*    Written by Juho Ryynänen
+*    With this small ATM program user can view account information,
+*    add money, withdraw money and print recipe
+*
 */
 
 #include <stdio.h>
@@ -30,13 +27,14 @@ typedef struct {
 
 Account Accounts[MAX_ACCOUNTS];
 
-bool readAccounts();
+bool initAccounts();
 void deposit(Account *customer); 
 void viewBalance(Account customer);
 void withdraw(Account *customer);
 void printReceipt(Account customer);
-void runATM();
-void displayMenu();
+void ATM();
+void printMenu();
+void updateAccount(Account *customer, int id);
 bool userValid(char creaditCard[30], int pin);
 
 
@@ -45,18 +43,19 @@ Account userSelection(char creaditCard[30], int pin);
 
 int main (void){
 
-    readAccounts();
-    runATM();
+    initAccounts();
+    ATM();
    
     return 0;
 
 }
 
+//Main loop for ATM
 
-void runATM(){
+void ATM(){
+    
      Account customer;
 
-    //printf("%s %d", Accounts[0].creditCard,  Accounts[0].pin);
     enum operation {view = 1, add, withdrawal, receipt, stop};
 
     int flag = 0,  logged = 1,  tries = 3, choice, pin;
@@ -78,10 +77,10 @@ void runATM(){
         scanf("%d", &pin);
        
         if(userValid(card, pin)){
-            
+
             customer = userSelection(card, pin);
             logged = 0;
-            printf("Welcome! %s\n", customer.name);
+            printf("\nWelcome! %s\n", customer.name);
     
         } else if (!userValid(card, pin)) {
             
@@ -92,7 +91,7 @@ void runATM(){
 
     do {
   
-        displayMenu();
+        printMenu();
         printf("\n> ");
         scanf("%d", &choice);
 
@@ -115,18 +114,18 @@ void runATM(){
         break;
         
         case stop:
+            printf("\nHave a nice day..");
             exit(0);
             break;
         }
    
     } while(true);
 
-    printf("\nHave a nice day..");
 }
 
-//Function that displays the menu
+//Print menu
 
-void displayMenu(void){
+void printMenu(void){
     
     const char *menu[] = {
         "View balance",
@@ -139,21 +138,22 @@ void displayMenu(void){
     printf("------ATM-------\n");
 
     for(int i = 0; i < sizeof(menu) / sizeof(menu[0]); i++){
-        printf("%d. %s\n", i+1, menu[i]);
+        printf("\n%d. %s\n", i+1, menu[i]);
     }
 
 }
 
+//Print account information
 
 void viewBalance(Account a){
      printf ("\nAccount information");
      printf("\n%s", a.creditCard);
-     printf("\nAvailable Balance: %lf €\n", a.balance);
-     printf("\nTransactions");
+     printf("\nAvailable Balance: %lf e\n", a.balance);
      printf("\n");
    
 }       
 
+//Deposit for user
 
 void deposit(Account *a){
     
@@ -170,6 +170,7 @@ void deposit(Account *a){
  
 }
 
+//Withdraws money from user
 
 void withdraw(Account *user){
    
@@ -196,22 +197,26 @@ void withdraw(Account *user){
 
 }
 
+//Takes account struct as parameter and prints receipt
+
 void printReceipt(Account a){
     
-    // Time reading
+    
     time_t now = time(&now);
     struct tm *ptm = gmtime(&now);
     
     printf("\nReceipt\n");
     printf("Time: %s", asctime(ptm));
-    printf("Account balance: %d\n", a.balance);
+    printf("Account balance: %lf\n", a.balance);
     printf("Card holder: %s\n", a.name);
 
     printf("\n");
 }
 
 
-bool readAccounts(){
+//Read accounts from file to struct
+
+bool initAccounts(){
 
     FILE *file = fopen("accounts.txt", "r");
 
@@ -248,6 +253,8 @@ bool readAccounts(){
     
 }
 
+//Validate user with card and pin return true if account is found.
+
 bool userValid(char creditCard[30], int pin) {
     for (int i = 0; i < MAX_ACCOUNTS; i++) {
         int compare = strcmp(Accounts[i].creditCard, creditCard);
@@ -257,6 +264,8 @@ bool userValid(char creditCard[30], int pin) {
     }
     return false;
 }
+
+//Select user from struct accounts
 
 Account userSelection(char card[30], int pin){
 
@@ -270,3 +279,4 @@ Account userSelection(char card[30], int pin){
     }
 
 }
+
